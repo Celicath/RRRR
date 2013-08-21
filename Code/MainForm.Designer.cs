@@ -42,6 +42,7 @@
 			this.glcScene.RenderTrigger = SharpGL.RenderTrigger.Manual;
 			this.glcScene.Size = new System.Drawing.Size(284, 262);
 			this.glcScene.TabIndex = 0;
+			this.glcScene.OpenGLInitialized += new System.EventHandler(this.glcScene_OpenGLInitialized);
 			this.glcScene.OpenGLDraw += new SharpGL.RenderEventHandler(this.glcScene_OpenGLDraw);
 			this.glcScene.GDIDraw += new SharpGL.RenderEventHandler(this.glcScene_GDIDraw);
 			this.glcScene.SizeChanged += new System.EventHandler(this.glcScene_SizeChanged);

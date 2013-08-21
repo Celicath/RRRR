@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpGL">
@@ -59,12 +61,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Util.cs" />
+    <Compile Include="Walker.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Math\MathHelper.cs" />
+    <Compile Include="Math\Matrix4.cs" />
+    <Compile Include="Math\Quaternion.cs" />
+    <Compile Include="Math\Vector2.cs" />
+    <Compile Include="Math\Vector3.cs" />
+    <Compile Include="Math\Vector4.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
@@ -78,6 +88,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -92,7 +103,68 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Walker_M.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Dont_Walk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Marker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player_test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Police.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Runner.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Traffic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Walk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Walker_F.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Walker_M_Flew.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_clock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_person.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_run_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_run_green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_run_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_rushhour.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Walker_F_Flew.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>copy /Y ..\..\..\Image\*.* ..\..\Resources</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
