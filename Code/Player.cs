@@ -13,7 +13,9 @@ namespace RRRR
 {
 	class Player : Walker
 	{
-		bool fever = false;
+		public bool fever = false;
+
+		public float sprint = 0;
 
 		public Player(int x, float y, float speed)
 			: base(WalkerType.Player, x, y, speed)
@@ -45,7 +47,7 @@ namespace RRRR
 					xmoving = 1;
 			}
 
-			if (Keyboard.IsKeyDown(Key.Space))
+			if (Keyboard.IsKeyDown(Key.Space) && (sprint > 20 || sprint > 10 && fever))
 				fever = true;
 			else fever = false;
 

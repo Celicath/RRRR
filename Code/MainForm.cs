@@ -19,11 +19,14 @@ namespace RRRR
 		float size = 0.0f;
 
 		StringFormat right = new StringFormat();
+		StringFormat middle = new StringFormat();
 		Font font;
+		Font smallfont;
 
 		Texture texrun;
 		Texture texM, texF, texMFly, texFFly;
 		Texture[] texBuilding = new Texture[4];
+		Texture texFloor1, texFloor2;
 
 		float dur = 0;
 
@@ -34,10 +37,18 @@ namespace RRRR
 		{
 			InitializeComponent();
 			right.Alignment = StringAlignment.Far;
+			middle.Alignment = StringAlignment.Center;
 		}
 
 		public void UpdateWorld(float elapsed)
 		{
+			player.sprint += elapsed * player.speed / 10000;
+			if (player.fever || player.speed > 13)
+			{
+				player.sprint -= elapsed / 50;
+				if (player.sprint < 0) player.sprint = 0;
+			}
+
 			if(player.speed > 3.0f)
 				dur += elapsed * player.speed;
 			float ratio = 200000 / (float)Math.Sqrt(player.y + 100);
@@ -106,16 +117,23 @@ namespace RRRR
 						w.flying = (float)(Util.rand.NextDouble() * 2 - 1);
 					}
 				}
-				else
+				else if(w.y > player.y - 0.2f && w.y < player.y + 0.5f)
 				{
-					if (Math.Abs(w.xpos - player.xpos) < 0.98f && w.y > player.y - 0.2f && w.y < player.y + 0.5f)
+					float dist = Math.Abs(w.xpos - player.xpos);
+					if (dist < 0.98f)
 					{
 						player.speed = 0;
 						w.speed = 0;
 						w.falling = 1;
 					}
+					else if (dist <= 1.1f && !w.check)
+					{
+						w.check = true;
+						player.sprint += 5;
+					}
 				}
 			}
+			if (player.sprint > 100) player.sprint = 100;
 		}
 
 		private void glcScene_OpenGLDraw(object sender, RenderEventArgs args)
@@ -242,9 +260,10 @@ namespace RRRR
 
 			g.DrawString((int)player.y + "m", font, Brushes.White, new PointF(size, size));
 
-			g.DrawString(walkers.Count.ToString(), font, Brushes.White, new PointF(size + glcScene.Width * 0.48f, size), right);
-
 			g.DrawString(player.speed.ToString("0.0") + "m/s", font, Brushes.White, new PointF(glcScene.Width - size, size), right);
+
+			g.FillRectangle(Brushes.Orange, new Rectangle(glcScene.Width * 2 / 5, glcScene.Height / 30, (int)(glcScene.Width * player.sprint / 500), glcScene.Height / 100));
+			g.DrawString(((int)player.sprint).ToString(), smallfont, Brushes.White, new PointF(glcScene.Width / 2, glcScene.Height / 30 - size / 2), middle);
 		}
 
 		private void glcScene_SizeChanged(object sender, EventArgs e)
@@ -252,6 +271,7 @@ namespace RRRR
 			size = glcScene.Height / 30.0f;
 			if (size < 1.0f) size = 1.0f;
 			font = new Font("Dotum", size);
+			smallfont = new Font("Dotum", size *0.75f);
 		}
 
 		private void glcScene_OpenGLInitialized(object sender, EventArgs e)
@@ -282,6 +302,11 @@ namespace RRRR
 			texBuilding[2].Create(gl, RRRR.Properties.Resources.apart_3);
 			texBuilding[3] = new Texture();
 			texBuilding[3].Create(gl, RRRR.Properties.Resources.apart_4);
+
+			texFloor1 = new Texture();
+			texFloor1.Create(gl, RRRR.Properties.Resources.block_0);
+			texFloor2 = new Texture();
+			texFloor2.Create(gl, RRRR.Properties.Resources.block_1);
 		}
 	}
 }

@@ -177,6 +177,12 @@
   <ItemGroup>
     <None Include="Resources\apart_4.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\block_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\block_0.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

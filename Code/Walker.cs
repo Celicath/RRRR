@@ -28,6 +28,8 @@ namespace RRRR
 		public float falling = 0;
 		public float flying = 0;
 
+		public bool check = false;
+
 		/// <summary>
 		/// 어떤 방향으로 움직이고 있는가
 		/// </summary>
