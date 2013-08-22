@@ -12,9 +12,12 @@ namespace RRRR
 	public enum WalkerType { Player, Male, Female };
 	class Walker
 	{
+		public float subpos;
+		public const float subs = 125;
+
 		public WalkerType type;
 
-		public int x;
+		protected int x;
 		public float y;
 		public float speed;
 
@@ -22,10 +25,17 @@ namespace RRRR
 
 		protected float time = 0.0f;
 
-		/// <summary> 3D 상에서 이동 속도 </summary>
-		public Vector3 vel = Vector3.Zero;
-
 		public bool die = false;
+
+		public float falling = 0;
+
+		public float xpos
+		{
+			get
+			{
+				return x + subpos / subs;
+			}
+		}
 
 		/// <summary>
 		/// 걷는 사람을 만든다.
@@ -43,10 +53,33 @@ namespace RRRR
 			this.speed = speed;
 		}
 
-		public virtual void Update(float elpased)
+		public virtual void Update(float elapsed)
 		{
-			y += elpased * speed/1000;
-			time += elpased;
+			y += elapsed * speed / 1000;
+			time += elapsed;
+
+			if (falling > 0)
+			{
+				falling = Math.Min(falling + elapsed / 9, 120);
+			}
+			else if (subpos > 0)
+			{
+				subpos += elapsed;
+				if (subpos > subs)
+				{
+					x++;
+					subpos = 0;
+				}
+			}
+			else if (subpos < 0)
+			{
+				subpos -= elapsed;
+				if (subpos < -subs)
+				{
+					x--;
+					subpos = 0;
+				}
+			}
 		}
 
 		public virtual void Draw3D(OpenGL gl)
@@ -55,15 +88,14 @@ namespace RRRR
 
 			gl.Begin(BeginMode.Quads);
 			{
-				gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 				gl.TexCoord(drawCoord / pieces, 1);
-				gl.Vertex(x - 2, y, 0);
+				gl.Vertex(xpos * 0.5f - 1, y, 0);
 				gl.TexCoord(drawCoord / pieces, 0);
-				gl.Vertex(x - 2, y, 4);
+				gl.Vertex(xpos * 0.5f - 1, y + 2 * Math.Sin(falling * Math.PI / 180), 2 * Math.Cos(falling * Math.PI / 180));
 				gl.TexCoord((drawCoord + 1) / pieces, 0);
-				gl.Vertex(x + 2, y, 4);
+				gl.Vertex(xpos * 0.5f + 1, y + 2 * Math.Sin(falling * Math.PI / 180), 2 * Math.Cos(falling * Math.PI / 180));
 				gl.TexCoord((drawCoord + 1) / pieces, 1);
-				gl.Vertex(x + 2, y, 0);
+				gl.Vertex(xpos * 0.5f + 1, y, 0);
 			}
 			gl.End();
 		}

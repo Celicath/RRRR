@@ -13,70 +13,65 @@ namespace RRRR
 {
 	class Player : Walker
 	{
-		float subpos;
-		const float subs = 200;
-
 		public Player(int x, float y, float speed)
 			: base(WalkerType.Player, x, y, speed)
 		{
 			pieces = 10;
 		}
 
-		public override void Update(float elpased)
+		public override void Update(float elapsed)
 		{
-			base.Update(elpased);
+			float acc = Math.Min(10 - speed, 3);
+			speed += elapsed * acc / 1000;
+			y += elapsed * speed / 1000;
+			time += elapsed;
 
 			if (Keyboard.IsKeyDown(Key.Left))
 			{
-				subpos -= elpased;
-				if (x + subpos / subs < -6)
+				subpos -= elapsed;
+				if (x + subpos / subs < -5)
 				{
-					x = -6;
+					x = -5;
 					subpos = 0;
 				}
 			}
 			if (Keyboard.IsKeyDown(Key.Right))
 			{
-				subpos += elpased;
-				if (x + subpos / subs > 6)
+				subpos += elapsed;
+				if (x + subpos / subs > 5)
 				{
-					x = 6;
+					x = 5;
 					subpos = 0;
 				}
 			}
 			if (subpos > subs)
 			{
-				subpos -= subs;
+				subpos = 0;
 				x++;
 			}
 			else if (subpos < -subs)
 			{
-				subpos += subs;
+				subpos = 0;
 				x--;
 			}
 		}
 
-		public override void Draw3D(SharpGL.OpenGL gl)
+		public override void Draw3D(OpenGL gl)
 		{
-			float drawCoord = (float)((int)(time * speed * pieces / 2000) % pieces);
-
-			gl.Enable(OpenGL.GL_TEXTURE_2D);
+			float drawCoord = (float)((int)(time * speed * pieces / 20000) % pieces);
 
 			gl.Begin(BeginMode.Quads);
 			{
-				gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 				gl.TexCoord(drawCoord / pieces, 1);
-				gl.Vertex(x + subpos / subs - 1.6, y, 0);
+				gl.Vertex(xpos * 0.5f - 0.8f, y, 0);
 				gl.TexCoord(drawCoord / pieces, 0);
-				gl.Vertex(x + subpos / subs - 1.6, y, 4);
+				gl.Vertex(xpos * 0.5f - 0.8f, y, 2);
 				gl.TexCoord((drawCoord + 1) / pieces, 0);
-				gl.Vertex(x + subpos / subs + 1.6, y, 4);
+				gl.Vertex(xpos * 0.5f + 0.8f, y, 2);
 				gl.TexCoord((drawCoord + 1) / pieces, 1);
-				gl.Vertex(x + subpos / subs + 1.6, y, 0);
+				gl.Vertex(xpos * 0.5f + 0.8f, y, 0);
 			}
 			gl.End();
-
-			gl.Disable(OpenGL.GL_TEXTURE_2D);
 		}
 	}
 }
