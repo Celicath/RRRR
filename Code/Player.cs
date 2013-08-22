@@ -57,20 +57,28 @@ namespace RRRR
 			float drawCoord = (int)(y * 2) % pieces;
 
 			float size = 2;
-			if (fever) size = 3f;
+			double theta = 0;
+			if (fever)
+			{
+				size = 3f;
+				if (xpos < -4)
+					theta = (xpos + 4) * Math.PI / 4;
+				else if (xpos > 4)
+					theta = (xpos - 4) * Math.PI / 4;
+			}
 
 			gl.Begin(BeginMode.Quads);
 			{
-				if(fever)
+				if (fever)
 					gl.Color(1.0f, 0.5f, 0.5f);
 				gl.TexCoord(drawCoord / pieces, 1);
-				gl.Vertex(xpos * 0.5f - 0.4f * size, y, 0);
+				gl.Vertex(xpos * 0.5f - (0.4f * size) * Math.Cos(theta), y - (0.4f * size) * Math.Sin(theta), 0);
 				gl.TexCoord(drawCoord / pieces, 0);
-				gl.Vertex(xpos * 0.5f - 0.4f * size, y, size);
+				gl.Vertex(xpos * 0.5f - (0.4f * size) * Math.Cos(theta), y - (0.4f * size) * Math.Sin(theta), size);
 				gl.TexCoord((drawCoord + 1) / pieces, 0);
-				gl.Vertex(xpos * 0.5f + 0.4f * size, y, size);
+				gl.Vertex(xpos * 0.5f + (0.4f * size) * Math.Cos(theta), y + (0.4f * size) * Math.Sin(theta), size);
 				gl.TexCoord((drawCoord + 1) / pieces, 1);
-				gl.Vertex(xpos * 0.5f + 0.4f * size, y, 0);
+				gl.Vertex(xpos * 0.5f + (0.4f * size) * Math.Cos(theta), y + (0.4f * size) * Math.Sin(theta), 0);
 				gl.Color(1.0f, 1.0f, 1.0f);
 			}
 			gl.End();

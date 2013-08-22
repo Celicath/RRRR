@@ -24,7 +24,7 @@ namespace RRRR
 			//Application.SetCompatibleTextRenderingDefault(false);
 
 			form = new MainForm();
-			form.ClientSize = new Size(800, 600);
+			form.ClientSize = new Size(600, 450);
 
 			Application.Idle += GameLoop;
 

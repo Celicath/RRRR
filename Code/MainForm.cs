@@ -147,14 +147,31 @@ namespace RRRR
 					gl.End();
 				}
 
-			gl.Enable(OpenGL.GL_TEXTURE_2D);
+			gl.Color(0.0f, 0.0f, 0.0f, 0.5f);
 
-			gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
+			gl.Enable(OpenGL.GL_BLEND);
+			foreach (Walker w in walkers)
+			{
+				gl.Begin(BeginMode.Polygon);
+				{
+					for (int i = 0; i < 16; i++)
+					{
+						gl.Vertex(w.xpos * 0.5f + w.flying + 0.35 * Math.Cos(i * Math.PI / 8), w.y + 0.35 * Math.Sin(i * Math.PI / 8), 0.1);
+					}
+				}
+				gl.End();
+			}
+			gl.Disable(OpenGL.GL_BLEND);
+
+			gl.Enable(OpenGL.GL_TEXTURE_2D);
 
 			int wi = 18, hi = 4;
 			for (int j = (int)((player.y - 40) / wi) * wi; j <= (int)((player.y + 20) / wi) * wi; j += wi)
 			{
 				texBuilding[(j / wi + 100) % 4].Bind(gl);
+				if ((j / wi - 3) % 11 == 10)
+					gl.Color(0.5f, 0.5f, 0.5f, 1.0f);
+				else gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 				gl.Begin(BeginMode.Quads);
 				{
 					gl.TexCoord(0, 1);
@@ -181,6 +198,8 @@ namespace RRRR
 				}
 				gl.End();
 			}
+
+			gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 			gl.Enable(OpenGL.GL_BLEND);
 			gl.Enable(OpenGL.GL_ALPHA_TEST);
@@ -231,6 +250,7 @@ namespace RRRR
 		private void glcScene_SizeChanged(object sender, EventArgs e)
 		{
 			size = glcScene.Height / 30.0f;
+			if (size < 1.0f) size = 1.0f;
 			font = new Font("Dotum", size);
 		}
 
