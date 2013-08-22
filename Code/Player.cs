@@ -13,6 +13,8 @@ namespace RRRR
 {
 	class Player : Walker
 	{
+		bool fever = false;
+
 		public Player(int x, float y, float speed)
 			: base(WalkerType.Player, x, y, speed)
 		{
@@ -21,55 +23,55 @@ namespace RRRR
 
 		public override void Update(float elapsed)
 		{
-			float acc = Math.Min(10 - speed, 3);
+			float acc = 0;
+			if (fever)
+				acc = 60 - speed * 2;
+			else
+			{
+				if (speed < 10)
+					acc = Math.Min(5 - speed / 2, 3);
+				else acc = 20 - speed * 2;
+			}
 			speed += elapsed * acc / 1000;
-			y += elapsed * speed / 1000;
-			time += elapsed;
 
 			if (Keyboard.IsKeyDown(Key.Left))
 			{
-				subpos -= elapsed;
-				if (x + subpos / subs < -5)
-				{
-					x = -5;
-					subpos = 0;
-				}
+				if (x + subpos / subs > -5)
+					xmoving = -1;
 			}
-			if (Keyboard.IsKeyDown(Key.Right))
+			else if (Keyboard.IsKeyDown(Key.Right))
 			{
-				subpos += elapsed;
-				if (x + subpos / subs > 5)
-				{
-					x = 5;
-					subpos = 0;
-				}
+				if (x + subpos / subs < 5)
+					xmoving = 1;
 			}
-			if (subpos > subs)
-			{
-				subpos = 0;
-				x++;
-			}
-			else if (subpos < -subs)
-			{
-				subpos = 0;
-				x--;
-			}
+
+			if (Keyboard.IsKeyDown(Key.Space))
+				fever = true;
+			else fever = false;
+
+			base.Update(elapsed);
 		}
 
 		public override void Draw3D(OpenGL gl)
 		{
-			float drawCoord = (float)((int)(time * speed * pieces / 20000) % pieces);
+			float drawCoord = (int)(y * 2) % pieces;
+
+			float size = 2;
+			if (fever) size = 3f;
 
 			gl.Begin(BeginMode.Quads);
 			{
+				if(fever)
+					gl.Color(1.0f, 0.5f, 0.5f);
 				gl.TexCoord(drawCoord / pieces, 1);
-				gl.Vertex(xpos * 0.5f - 0.8f, y, 0);
+				gl.Vertex(xpos * 0.5f - 0.4f * size, y, 0);
 				gl.TexCoord(drawCoord / pieces, 0);
-				gl.Vertex(xpos * 0.5f - 0.8f, y, 2);
+				gl.Vertex(xpos * 0.5f - 0.4f * size, y, size);
 				gl.TexCoord((drawCoord + 1) / pieces, 0);
-				gl.Vertex(xpos * 0.5f + 0.8f, y, 2);
+				gl.Vertex(xpos * 0.5f + 0.4f * size, y, size);
 				gl.TexCoord((drawCoord + 1) / pieces, 1);
-				gl.Vertex(xpos * 0.5f + 0.8f, y, 0);
+				gl.Vertex(xpos * 0.5f + 0.4f * size, y, 0);
+				gl.Color(1.0f, 1.0f, 1.0f);
 			}
 			gl.End();
 		}

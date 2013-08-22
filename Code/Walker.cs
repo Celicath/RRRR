@@ -25,9 +25,13 @@ namespace RRRR
 
 		protected float time = 0.0f;
 
-		public bool die = false;
-
 		public float falling = 0;
+		public float flying = 0;
+
+		/// <summary>
+		/// 어떤 방향으로 움직이고 있는가
+		/// </summary>
+		public int xmoving = 0;
 
 		public float xpos
 		{
@@ -44,7 +48,6 @@ namespace RRRR
 		/// <param name="x">x 좌표</param>
 		/// <param name="y">y 좌표</param>
 		/// <param name="speed">속도</param>
-		/// <param name="pieces">텍스쳐가 몇 개로 되어있는가</param>
 		public Walker(WalkerType type, int x, float y, float speed)
 		{
 			this.type = type;
@@ -59,32 +62,47 @@ namespace RRRR
 			time += elapsed;
 
 			if (falling > 0)
-			{
 				falling = Math.Min(falling + elapsed / 9, 120);
-			}
-			else if (subpos > 0)
+			else if (flying > 0)
+				flying += elapsed / 70;
+			else if (flying < 0)
+				flying -= elapsed / 70;
+			else if (xmoving > 0)
 			{
 				subpos += elapsed;
-				if (subpos > subs)
+				if (subpos < elapsed && subpos >= 0)
+				{
+					subpos = 0;
+					xmoving = 0;
+				}
+				else if (subpos > subs)
 				{
 					x++;
 					subpos = 0;
+					xmoving = 0;
 				}
 			}
-			else if (subpos < 0)
+			else if (xmoving < 0)
 			{
 				subpos -= elapsed;
 				if (subpos < -subs)
-				{
-					x--;
-					subpos = 0;
-				}
+					if (subpos > -elapsed && subpos <= 0)
+					{
+						subpos = 0;
+						xmoving = 0;
+					}
+					else if (subpos < -subs)
+					{
+						x--;
+						subpos = 0;
+						xmoving = 0;
+					}
 			}
 		}
 
 		public virtual void Draw3D(OpenGL gl)
 		{
-			float drawCoord = (float)((int)(time * speed * pieces / 2000) % pieces);
+			float drawCoord = (int)(y * 2) % pieces;
 
 			gl.Begin(BeginMode.Quads);
 			{
@@ -99,5 +117,25 @@ namespace RRRR
 			}
 			gl.End();
 		}
+
+		public void Draw3DFlying(OpenGL gl)
+		{
+			double theta = (-flying * 50 + 45) * Math.PI / 180;
+			float a = (float)(Math.Sqrt(2) * Math.Cos(theta));
+			float b = (float)(Math.Sqrt(2) * Math.Sin(theta));
+
+			gl.Begin(BeginMode.Quads);
+			{
+				gl.TexCoord(0, 1);
+				gl.Vertex(xpos * 0.5f - a + flying, y, 1 - b + Math.Sqrt(Math.Abs(flying / 2)));
+				gl.TexCoord(0, 0);
+				gl.Vertex(xpos * 0.5f - b + flying, y, 1 + a + Math.Sqrt(Math.Abs(flying / 2)));
+				gl.TexCoord(1, 0);
+				gl.Vertex(xpos * 0.5f + a + flying, y, 1 + b + Math.Sqrt(Math.Abs(flying / 2)));
+				gl.TexCoord(1, 1);
+				gl.Vertex(xpos * 0.5f + b + flying, y, 1 - a + Math.Sqrt(Math.Abs(flying / 2)));
+			}
+			gl.End();
+		}                        
 	}
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using SharpGL;
 using SharpGL.Enumerations;
 using SharpGL.SceneGraph.Assets;
@@ -21,8 +22,8 @@ namespace RRRR
 		Font font;
 
 		Texture texrun;
-		Texture texM;
-		Texture texF;
+		Texture texM, texF, texMFly, texFFly;
+
 
 		float dur = 0;
 
@@ -39,7 +40,7 @@ namespace RRRR
 		{
 			if(player.speed > 3.0f)
 				dur += elapsed * player.speed;
-			float ratio = 10000 / (player.y / 500 + 1);
+			float ratio = 200000 / (float)Math.Sqrt(player.y + 100);
 			if (dur > ratio)
 			{
 				dur -= ratio;
@@ -57,31 +58,33 @@ namespace RRRR
 
 			for (int i = 0; i < walkers.Count - 1; i++)
 			{
-				if (walkers[i].subpos != 0 || walkers[i].type == WalkerType.Player) continue;
-				if (walkers[i].y < player.y + 3) continue;
+				if (walkers[i].xmoving != 0 || walkers[i].type == WalkerType.Player) continue;
+				if (walkers[i].y < player.y + 3 && walkers[i].y > player.y) continue;
 				for (int j = i + 1; j < walkers.Count; j++)
 				{
+					if (walkers[i].y < walkers[j].y - 2.0f)
+						break;
 					if (Math.Abs(walkers[i].xpos - walkers[j].xpos) < 1.2f && walkers[i].speed > walkers[j].speed)
 					{
-						if (walkers[i].y > walkers[j].y - 0.8f)
+						if (walkers[i].y > walkers[j].y - 0.75f)
 						{
 							walkers[i].speed = walkers[j].speed - 1.0f;
 							if (walkers[i].speed < walkers[j].speed / 2)
 								walkers[i].speed = walkers[j].speed / 2;
 							break;
 						}
-						else if (walkers[i].y > walkers[j].y - 2.0f)
+						else
 						{
 							if (walkers[i].xpos > walkers[j].xpos)
-								walkers[i].subpos = 0.01f;
+								walkers[i].xmoving = 1;
 							else if (walkers[i].xpos < walkers[j].xpos)
-								walkers[i].subpos = -0.01f;
-							else walkers[i].subpos = (float)(Util.rand.NextDouble() * 0.02 - 0.01);
+								walkers[i].xmoving = -1;
+							else walkers[i].xmoving = Util.rand.Next(0, 2) * 2 - 1;
 
-							if (walkers[j].xpos + 1 > 3)
-								walkers[i].subpos = -0.01f;
-							else if (walkers[j].xpos - 1 < -3)
-								walkers[i].subpos = +0.01f;
+							if (walkers[i].xpos >= 3)
+								walkers[i].xmoving = -1;
+							else if (walkers[i].xpos <= -3)
+								walkers[i].xmoving = 1;
 
 							break;
 						}
@@ -92,16 +95,30 @@ namespace RRRR
 			foreach (Walker w in walkers)
 			{
 				if (w.type == WalkerType.Player) continue;
-				if (w.xpos > player.xpos - 0.8f && w.xpos < player.xpos + 0.8f && w.y > player.y - 0.1f && w.y < player.y + 0.4f && w.falling == 0)
+				if (w.flying != 0 || w.falling != 0) continue;
+
+				if (player.speed > 16)
 				{
-					player.speed = 0;
-					w.speed = 0;
-					w.falling = 1;
+					if (Math.Abs(w.xpos - player.xpos) <= 2.0f && w.y > player.y - 0.5f && w.y < player.y + 1.2f)
+					{
+						w.speed = Util.rand.Next(20, 48);
+						if (w.speed >= 30) w.speed += 1;
+						w.flying = (float)(Util.rand.NextDouble() * 2 - 1);
+					}
+				}
+				else
+				{
+					if (Math.Abs(w.xpos - player.xpos) < 0.98f && w.y > player.y - 0.2f && w.y < player.y + 0.5f)
+					{
+						player.speed = 0;
+						w.speed = 0;
+						w.falling = 1;
+					}
 				}
 			}
 		}
 
-		private void glcScene_OpenGLDraw(object sender, SharpGL.RenderEventArgs args)
+		private void glcScene_OpenGLDraw(object sender, RenderEventArgs args)
 		{
 			OpenGL gl = glcScene.OpenGL;
 
@@ -140,12 +157,21 @@ namespace RRRR
 
 			texF.Bind(gl);
 			foreach (Walker w in walkers)
-				if(w.type == WalkerType.Female)
+				if (w.type == WalkerType.Female && w.flying == 0)
 					w.Draw3D(gl);
 			texM.Bind(gl);
 			foreach (Walker w in walkers)
-				if (w.type == WalkerType.Male)
+				if (w.type == WalkerType.Male && w.flying == 0)
 					w.Draw3D(gl);
+			texFFly.Bind(gl);
+			foreach (Walker w in walkers)
+				if (w.type == WalkerType.Female && w.flying != 0)
+					w.Draw3DFlying(gl);
+			texMFly.Bind(gl);
+			foreach (Walker w in walkers)
+				if (w.type == WalkerType.Male && w.flying != 0)
+					w.Draw3DFlying(gl);
+
 			texrun.Bind(gl);
 			player.Draw3D(gl);
 
@@ -188,9 +214,14 @@ namespace RRRR
 			texF = new Texture();
 			texF.Create(gl, RRRR.Properties.Resources.Walker_F);
 
-			player = new Player(0, 0, 10);
+			texMFly = new Texture();
+			texMFly.Create(gl, RRRR.Properties.Resources.Walker_M_Flew);
+			texFFly = new Texture();
+			texFFly.Create(gl, RRRR.Properties.Resources.Walker_F_Flew);
+
+			player = new Player(0, 0, 0);
 			walkers.Add(player);
-			player.y = 0;
+			player.y = 10000;
 		}
 	}
 }
