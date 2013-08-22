@@ -165,6 +165,18 @@
   <ItemGroup>
     <None Include="Resources\Walker_F_Flew.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\apart_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\apart_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\apart_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\apart_4.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

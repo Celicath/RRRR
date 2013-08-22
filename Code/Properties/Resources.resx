@@ -199,4 +199,16 @@
   <data name="Walker_M_Flew" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Walker_M_Flew.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="apart_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\apart_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="apart_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\apart_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="apart_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\apart_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="apart_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\apart_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

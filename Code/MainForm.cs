@@ -23,7 +23,7 @@ namespace RRRR
 
 		Texture texrun;
 		Texture texM, texF, texMFly, texFFly;
-
+		Texture[] texBuilding = new Texture[4];
 
 		float dur = 0;
 
@@ -123,7 +123,7 @@ namespace RRRR
 			OpenGL gl = glcScene.OpenGL;
 
 			gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
-			gl.ClearColor(0.25f, 0.75f, 1.0f, 1.0f);
+			gl.ClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 			gl.BlendFunc(BlendingSourceFactor.SourceAlpha, BlendingDestinationFactor.OneMinusSourceAlpha);
 
 			gl.LoadIdentity();
@@ -147,13 +147,44 @@ namespace RRRR
 					gl.End();
 				}
 
+			gl.Enable(OpenGL.GL_TEXTURE_2D);
+
 			gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+			int wi = 18, hi = 4;
+			for (int j = (int)((player.y - 40) / wi) * wi; j <= (int)((player.y + 20) / wi) * wi; j += wi)
+			{
+				texBuilding[(j / wi + 100) % 4].Bind(gl);
+				gl.Begin(BeginMode.Quads);
+				{
+					gl.TexCoord(0, 1);
+					gl.Vertex(-3, j, 0);
+					gl.TexCoord(1, 1);
+					gl.Vertex(-3, j + wi, 0);
+					gl.TexCoord(1, 0);
+					gl.Vertex(-3, j + wi, hi);
+					gl.TexCoord(0, 0);
+					gl.Vertex(-3, j, hi);
+				}
+				gl.End();
+				texBuilding[(j / wi + 102) % 4].Bind(gl);
+				gl.Begin(BeginMode.Quads);
+				{
+					gl.TexCoord(1, 1);
+					gl.Vertex(3, j, 0);
+					gl.TexCoord(0, 1);
+					gl.Vertex(3, j + wi, 0);
+					gl.TexCoord(0, 0);
+					gl.Vertex(3, j + wi, hi);
+					gl.TexCoord(1, 0);
+					gl.Vertex(3, j, hi);
+				}
+				gl.End();
+			}
 
 			gl.Enable(OpenGL.GL_BLEND);
 			gl.Enable(OpenGL.GL_ALPHA_TEST);
 			gl.AlphaFunc(AlphaTestFunction.Great, 0.1f);
-
-			gl.Enable(OpenGL.GL_TEXTURE_2D);
 
 			texF.Bind(gl);
 			foreach (Walker w in walkers)
@@ -221,7 +252,16 @@ namespace RRRR
 
 			player = new Player(0, 0, 0);
 			walkers.Add(player);
-			player.y = 10000;
+			player.y = 0;
+
+			texBuilding[0] = new Texture();
+			texBuilding[0].Create(gl, RRRR.Properties.Resources.apart_1);
+			texBuilding[1] = new Texture();
+			texBuilding[1].Create(gl, RRRR.Properties.Resources.apart_2);
+			texBuilding[2] = new Texture();
+			texBuilding[2].Create(gl, RRRR.Properties.Resources.apart_3);
+			texBuilding[3] = new Texture();
+			texBuilding[3].Create(gl, RRRR.Properties.Resources.apart_4);
 		}
 	}
 }
