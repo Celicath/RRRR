@@ -510,7 +510,7 @@ namespace RRRR
 
 			player = new Player(0, 0, 0);
 			walkers.Add(player);
-			player.y = 400;
+			player.y = 0;
 
 			texBuilding[0] = new Texture();
 			texBuilding[0].Create(gl, RRRR.Properties.Resources.apart_1);
