@@ -46,6 +46,7 @@
 			this.glcScene.OpenGLDraw += new SharpGL.RenderEventHandler(this.glcScene_OpenGLDraw);
 			this.glcScene.GDIDraw += new SharpGL.RenderEventHandler(this.glcScene_GDIDraw);
 			this.glcScene.SizeChanged += new System.EventHandler(this.glcScene_SizeChanged);
+			this.glcScene.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glcScene_KeyDown);
 			// 
 			// MainForm
 			// 

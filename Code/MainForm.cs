@@ -49,6 +49,8 @@ namespace RRRR
 
 		Bitmap logo = RRRR.Properties.Resources.logo;
 
+		bool paused = false;
+
 		public MainForm()
 		{
 			InitializeComponent();
@@ -64,6 +66,7 @@ namespace RRRR
 
 		public void UpdateWorld(float elapsed)
 		{
+			if (paused) return;
 //			if (elapsed > 0.1f)
 //				elapsed = 0.01f;
 			switch (state)
@@ -459,6 +462,8 @@ namespace RRRR
 					#endregion
 					break;
 			}
+			if (paused)
+				g.DrawString("PAUSED", font, Brushes.Blue, new PointF(glcScene.Width / 2, glcScene.Height * 0.45f), middle);
 		}
 
 		private void glcScene_SizeChanged(object sender, EventArgs e)
@@ -505,6 +510,14 @@ namespace RRRR
 
 			texStart = new Texture();
 			texStart.Create(gl, RRRR.Properties.Resources.START);
+		}
+
+		private void glcScene_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+			{
+				paused = !paused;
+			}
 		}
 	}
 }
