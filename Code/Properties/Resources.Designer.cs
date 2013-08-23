@@ -293,6 +293,16 @@ namespace RRRR.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap START {
+            get {
+                object obj = ResourceManager.GetObject("START", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Traffic {
             get {
                 object obj = ResourceManager.GetObject("Traffic", resourceCulture);

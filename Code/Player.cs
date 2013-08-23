@@ -47,7 +47,7 @@ namespace RRRR
 					xmoving = 1;
 			}
 
-			if (Keyboard.IsKeyDown(Key.Space) && (sprint > 20 || sprint > 10 && fever))
+			if (Keyboard.IsKeyDown(Key.Space) && (sprint > 25 || sprint > 10 && fever))
 				fever = true;
 			else fever = false;
 
