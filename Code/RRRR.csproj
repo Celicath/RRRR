@@ -186,6 +186,9 @@
   <ItemGroup>
     <None Include="Resources\START.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\checkpoint.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

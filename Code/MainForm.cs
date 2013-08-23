@@ -28,6 +28,7 @@ namespace RRRR
 		Texture[] texBuilding = new Texture[4];
 		Texture texFloor1, texFloor2;
 		Texture texStart;
+		Texture texCheck;
 
 		float dur = 0;
 
@@ -299,6 +300,23 @@ namespace RRRR
 						}
 						gl.End();
 					}
+					else if(player.y % 500 > 450 || player.y % 500 < 50)
+					{
+						int yy = (int)((player.y + 250) / 500) * 500;
+						texCheck.Bind(gl);
+						gl.Begin(BeginMode.Quads);
+						{
+							gl.TexCoord(0, 1);
+							gl.Vertex(-2, yy, 3);
+							gl.TexCoord(0, 0);
+							gl.Vertex(-2, yy, 4);
+							gl.TexCoord(1, 0);
+							gl.Vertex(2, yy, 4);
+							gl.TexCoord(1, 1);
+							gl.Vertex(2, yy, 3);
+						}
+						gl.End();
+					}
 					gl.Disable(OpenGL.GL_TEXTURE_2D);
 
 					/*
@@ -492,7 +510,7 @@ namespace RRRR
 
 			player = new Player(0, 0, 0);
 			walkers.Add(player);
-			player.y = 0;
+			player.y = 400;
 
 			texBuilding[0] = new Texture();
 			texBuilding[0].Create(gl, RRRR.Properties.Resources.apart_1);
@@ -510,6 +528,8 @@ namespace RRRR
 
 			texStart = new Texture();
 			texStart.Create(gl, RRRR.Properties.Resources.START);
+			texCheck = new Texture();
+			texCheck.Create(gl, RRRR.Properties.Resources.checkpoint);
 		}
 
 		private void glcScene_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
